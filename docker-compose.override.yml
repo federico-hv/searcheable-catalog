@@ -1,0 +1,14 @@
+# version: "3.9"
+
+services:
+  nextjs:
+    build:
+      context: ./searcheable-catalog
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./searcheable-catalog:/app # Mount local code
+      - /app/node_modules # Keep container node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
