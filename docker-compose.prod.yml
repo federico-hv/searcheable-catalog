@@ -7,3 +7,10 @@ services:
       dockerfile: Dockerfile.prod
     ports:
       - "3000:3000"
+
+  golang:
+    build:
+      context: ./golang-service
+      dockerfile: Dockerfile.prod
+    ports:
+      - "8080:8080"

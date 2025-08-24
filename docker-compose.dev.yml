@@ -12,3 +12,13 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
+
+  golang:
+    build:
+      context: ./golang-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./golang-service:/app # Mount local code
+      - /app/tmp # For air temp files
+    ports:
+      - "8080:8080"

@@ -1,173 +1,26 @@
 "use client";
 
 import React, { useState } from "react";
+import mockData from "./products";
 
-// Unique handcrafted dataset (20 items for now, can be expanded to 100+)
-const mockData = [
-  {
-    id: 1,
-    name: "Wireless Headphones",
-    description:
-      "Noise-cancelling over-ear headphones with 30 hours of battery.",
-    category: "Electronics",
-    price: "129.99",
-    image: "https://picsum.photos/seed/headphones/200/200",
-  },
-  {
-    id: 2,
-    name: "Smartphone XR",
-    description: "6.1-inch display, 128GB storage, dual cameras.",
-    category: "Electronics",
-    price: "699.99",
-    image: "https://picsum.photos/seed/smartphone/200/200",
-  },
-  {
-    id: 3,
-    name: "Bluetooth Speaker",
-    description: "Portable waterproof speaker with deep bass.",
-    category: "Electronics",
-    price: "59.99",
-    image: "https://picsum.photos/seed/speaker/200/200",
-  },
-  {
-    id: 4,
-    name: "4K Monitor",
-    description: "27-inch 4K UHD monitor with HDR and slim bezels.",
-    category: "Electronics",
-    price: "349.99",
-    image: "https://picsum.photos/seed/monitor/200/200",
-  },
-  {
-    id: 5,
-    name: "Gaming Laptop",
-    description: "15.6-inch gaming laptop with RTX graphics and SSD.",
-    category: "Electronics",
-    price: "1199.99",
-    image: "https://picsum.photos/seed/laptop/200/200",
-  },
-  {
-    id: 6,
-    name: "Cotton T-Shirt",
-    description: "100% organic cotton t-shirt available in multiple colors.",
-    category: "Clothing",
-    price: "19.99",
-    image: "https://picsum.photos/seed/tshirt/200/200",
-  },
-  {
-    id: 7,
-    name: "Denim Jacket",
-    description: "Classic denim jacket with button closure.",
-    category: "Clothing",
-    price: "59.99",
-    image: "https://picsum.photos/seed/jacket/200/200",
-  },
-  {
-    id: 8,
-    name: "Running Shoes",
-    description: "Lightweight breathable running shoes for comfort.",
-    category: "Clothing",
-    price: "89.99",
-    image: "https://picsum.photos/seed/shoes/200/200",
-  },
-  {
-    id: 9,
-    name: "Wool Scarf",
-    description: "Warm wool scarf perfect for winter.",
-    category: "Clothing",
-    price: "29.99",
-    image: "https://picsum.photos/seed/scarf/200/200",
-  },
-  {
-    id: 10,
-    name: "Leather Belt",
-    description: "Genuine leather belt with metal buckle.",
-    category: "Clothing",
-    price: "24.99",
-    image: "https://picsum.photos/seed/belt/200/200",
-  },
-  {
-    id: 11,
-    name: "Espresso Machine",
-    description: "Compact espresso machine with milk frother.",
-    category: "Home Appliances",
-    price: "249.99",
-    image: "https://picsum.photos/seed/espresso/200/200",
-  },
-  {
-    id: 12,
-    name: "Air Fryer",
-    description: "Oil-less air fryer with digital controls.",
-    category: "Home Appliances",
-    price: "129.99",
-    image: "https://picsum.photos/seed/airfryer/200/200",
-  },
-  {
-    id: 13,
-    name: "Robot Vacuum",
-    description: "Self-charging smart vacuum cleaner with Wi-Fi.",
-    category: "Home Appliances",
-    price: "349.99",
-    image: "https://picsum.photos/seed/vacuum/200/200",
-  },
-  {
-    id: 14,
-    name: "Electric Kettle",
-    description: "1.7L stainless steel kettle with auto shut-off.",
-    category: "Home Appliances",
-    price: "39.99",
-    image: "https://picsum.photos/seed/kettle/200/200",
-  },
-  {
-    id: 15,
-    name: "Microwave Oven",
-    description: "900W microwave oven with smart settings.",
-    category: "Home Appliances",
-    price: "129.99",
-    image: "https://picsum.photos/seed/microwave/200/200",
-  },
-  {
-    id: 16,
-    name: "The Great Gatsby",
-    description: "Classic novel by F. Scott Fitzgerald.",
-    category: "Books",
-    price: "14.99",
-    image: "https://picsum.photos/seed/gatsby/200/200",
-  },
-  {
-    id: 17,
-    name: "1984",
-    description: "Dystopian novel by George Orwell.",
-    category: "Books",
-    price: "12.99",
-    image: "https://picsum.photos/seed/1984/200/200",
-  },
-  {
-    id: 18,
-    name: "To Kill a Mockingbird",
-    description: "Pulitzer Prize-winning novel by Harper Lee.",
-    category: "Books",
-    price: "16.99",
-    image: "https://picsum.photos/seed/mockingbird/200/200",
-  },
-  {
-    id: 19,
-    name: "The Hobbit",
-    description: "Fantasy adventure by J.R.R. Tolkien.",
-    category: "Books",
-    price: "18.99",
-    image: "https://picsum.photos/seed/hobbit/200/200",
-  },
-  {
-    id: 20,
-    name: "Pride and Prejudice",
-    description: "Romantic classic by Jane Austen.",
-    category: "Books",
-    price: "11.99",
-    image: "https://picsum.photos/seed/pride/200/200",
-  },
-];
+// Define the type for a product
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  category: string;
+  price: string;
+  image: string;
+}
 
-function ProductCard({ item }) {
+// Unique handcrafted dataset
+
+// ProductCard props interface
+interface ProductCardProps {
+  item: Product;
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
   const [loaded, setLoaded] = useState(false);
 
   return (
@@ -197,14 +50,14 @@ function ProductCard({ item }) {
       </div>
     </div>
   );
-}
+};
 
-export default function CatalogGrid() {
-  const [query, setQuery] = useState("");
-  const [aiOpen, setAiOpen] = useState(false);
-  const [aiThinking, setAiThinking] = useState(false);
-  const [aiMessage, setAiMessage] = useState("");
-  const [aiInput, setAiInput] = useState("");
+const CatalogGrid: React.FC = () => {
+  const [query, setQuery] = useState<string>("");
+  const [aiOpen, setAiOpen] = useState<boolean>(false);
+  const [aiThinking, setAiThinking] = useState<boolean>(false);
+  const [aiMessage, setAiMessage] = useState<string>("");
+  const [aiInput, setAiInput] = useState<string>("");
 
   const filteredData = mockData.filter(
     (item) =>
@@ -285,4 +138,6 @@ export default function CatalogGrid() {
       </div>
     </div>
   );
-}
+};
+
+export default CatalogGrid;
