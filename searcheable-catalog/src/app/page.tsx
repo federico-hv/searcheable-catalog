@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import mockData from "./products";
 
 // Define the type for a product
@@ -12,8 +12,6 @@ interface Product {
   price: string;
   image: string;
 }
-
-// Unique handcrafted dataset
 
 // ProductCard props interface
 interface ProductCardProps {
@@ -54,12 +52,39 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
 
 const CatalogGrid: React.FC = () => {
   const [query, setQuery] = useState<string>("");
+  const [source, setSource] = useState<"mock" | "golang" | "python">("mock");
+  const [data, setData] = useState<Product[]>(mockData);
+  const [loading, setLoading] = useState<boolean>(false);
   const [aiOpen, setAiOpen] = useState<boolean>(false);
   const [aiThinking, setAiThinking] = useState<boolean>(false);
   const [aiMessage, setAiMessage] = useState<string>("");
   const [aiInput, setAiInput] = useState<string>("");
 
-  const filteredData = mockData.filter(
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        if (source === "mock") {
+          setData(mockData);
+        } else {
+          const endpoint =
+            source === "golang" ? "/api/golang-search" : "/api/python-search";
+          const res = await fetch(endpoint);
+          const result = await res.json();
+          setData(result);
+        }
+      } catch (err) {
+        console.error("Failed to fetch data:", err);
+        setData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [source]);
+
+  const filteredData = data.filter(
     (item) =>
       item.name.toLowerCase().includes(query.toLowerCase()) ||
       item.description.toLowerCase().includes(query.toLowerCase()) ||
@@ -80,28 +105,70 @@ const CatalogGrid: React.FC = () => {
     <div className="flex min-h-screen w-full flex-row bg-gradient-to-br from-purple-50 to-pink-50">
       {/* Catalog Section */}
       <div className="flex flex-1 flex-col items-center p-6">
-        <h1 className="mb-6 text-3xl font-bold text-gray-800">
+        <h1 className="mb-4 text-3xl font-bold text-gray-800">
           Product Catalog
         </h1>
+
+        {/* Source Selector */}
+        <div className="mb-4 flex gap-2">
+          <button
+            onClick={() => setSource("mock")}
+            className={`rounded px-4 py-2 font-semibold cursor-pointer ${
+              source === "mock"
+                ? "bg-purple-600 text-white"
+                : "bg-gray-300 text-gray-800 hover:bg-gray-400"
+            }`}
+          >
+            Mock
+          </button>
+          <button
+            onClick={() => setSource("golang")}
+            className={`rounded px-4 py-2 font-semibold cursor-pointer ${
+              source === "golang"
+                ? "bg-purple-600 text-white"
+                : "bg-gray-300 text-gray-800 hover:bg-gray-400"
+            }`}
+          >
+            Golang
+          </button>
+          <button
+            onClick={() => setSource("python")}
+            className={`rounded px-4 py-2 font-semibold cursor-pointer ${
+              source === "python"
+                ? "bg-purple-600 text-white"
+                : "bg-gray-300 text-gray-800 hover:bg-gray-400"
+            }`}
+          >
+            Python
+          </button>
+        </div>
+
+        {/* Search Input */}
         <input
           type="text"
           placeholder="Search products, categories..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="mb-8 w-1/2 rounded-2xl border p-3 shadow focus:outline-none focus:ring-2 focus:ring-purple-400"
+          className="mb-6 w-full max-w-2xl rounded-2xl border p-3 shadow focus:outline-none focus:ring-2 focus:ring-purple-400"
         />
-        <div className="grid w-full max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {filteredData.map((item) => (
-            <ProductCard key={item.id} item={item} />
-          ))}
-        </div>
+
+        {/* Catalog Grid */}
+        {loading ? (
+          <p className="text-gray-500">Loading...</p>
+        ) : (
+          <div className="grid w-full max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {filteredData.map((item) => (
+              <ProductCard key={item.id} item={item} />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* AI Assistant Sidebar */}
       <div
         className={`transition-all duration-300 ${
           aiOpen ? "w-80" : "w-16"
-        } flex flex-col border-l bg-white shadow-lg`}
+        } flex flex-col border-l bg-white shadow-lg text-purple-700`}
       >
         <button
           onClick={() => setAiOpen(!aiOpen)}
