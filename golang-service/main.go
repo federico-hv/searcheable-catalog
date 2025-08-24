@@ -1,16 +1,19 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
 )
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "Hello Golang")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "Hello Golang",
+	})
 }
 
 func main() {
-    http.HandleFunc("/", helloHandler)
-    fmt.Println("Golang service running on port 8080")
-    http.ListenAndServe(":8080", nil)
+	http.HandleFunc("/", helloHandler)
+	println("Golang service running on port 8080")
+	http.ListenAndServe(":8080", nil)
 }
