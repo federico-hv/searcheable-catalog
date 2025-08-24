@@ -22,3 +22,12 @@ services:
       - /app/tmp # For air temp files
     ports:
       - "8080:8080"
+
+  python:
+    build:
+      context: ./python-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./python-service:/app
+    ports:
+      - "8000:8000"

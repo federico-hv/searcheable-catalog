@@ -14,3 +14,10 @@ services:
       dockerfile: Dockerfile.prod
     ports:
       - "8080:8080"
+
+  python:
+    build:
+      context: ./python-service
+      dockerfile: Dockerfile.prod
+    ports:
+      - "8000:8000"
